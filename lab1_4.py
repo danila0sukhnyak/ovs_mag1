@@ -115,7 +115,7 @@ if __name__ == "__main__":
     nn.train(X_train, y_train, learning_rate, epochs)
 
     # Пример использования нейронной сети для классификации
-    test_image = Image.open("T_1.jpg").convert('L')
+    test_image = Image.open("images/T_1.jpg").convert('L')
     test_image = test_image.resize((7, 7))
     test_input = np.array(test_image)
     test_input = (test_input > 128).astype(int)  # Преобразование черного цвета в 1, белого в 0
