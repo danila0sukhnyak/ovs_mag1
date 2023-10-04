@@ -147,8 +147,8 @@ if __name__ == "__main__":
     y_train = np.array(y_train)
 
     # Обучение нейронной сети
-    learning_rate = 0.25
-    epochs = 15000
+    learning_rate = 0.74
+    epochs = 10000
     nn.train(X_train, y_train, learning_rate, epochs)
 
     # Пример использования нейронной сети для классификации
