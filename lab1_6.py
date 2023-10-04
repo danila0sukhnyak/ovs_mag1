@@ -118,7 +118,7 @@ def load_image(path):
 def main():
     # Пример обучения нейронной сети
     input_size = 49  # 7x7 пикселей
-    hidden_sizes = [16, 8]  # Количество скрытых слоев и их размеры
+    hidden_sizes = [16]  # Количество скрытых слоев и их размеры
     output_size = 3  # Количество классов (круг, квадрат, треугольник)
 
     # Создаем нейронную сеть
@@ -152,12 +152,12 @@ def main():
     y_train = np.array(y_train)
 
     # Обучение нейронной сети
-    learning_rate = 0.74
+    learning_rate = 0.25
     epochs = 10000
     nn.train(X_train, y_train, learning_rate, epochs)
 
     # Пример использования нейронной сети для классификации
-    image_path = "test/T_I.jpg"
+    image_path = "test/C_I.jpg"
     output_array = load_image(image_path)
     print(image_path)
     print(output_array.reshape(7, 7))
