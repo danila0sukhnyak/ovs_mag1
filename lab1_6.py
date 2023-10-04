@@ -1,5 +1,6 @@
 import numpy as np
 from PIL import Image
+from memory_profiler import profile
 import os
 
 
@@ -105,11 +106,19 @@ class NeuralNetwork:
     #             layer.bias += learning_rate * np.sum(delta, axis=0, keepdims=True)
     #             error = np.dot(delta, layer.weights.T)
 
+def load_image(path):
+    image = Image.open(path).convert('L')  # Преобразование в черно-белое изображение
+    image = image.resize((7, 7))
+    image_data = np.array(image)
+    image_data = (image_data < 128).astype(int)
+    return image_data.flatten()
 
-if __name__ == "__main__":
+
+@profile
+def main():
     # Пример обучения нейронной сети
     input_size = 49  # 7x7 пикселей
-    hidden_sizes = [16]  # Количество скрытых слоев и их размеры
+    hidden_sizes = [16, 8]  # Количество скрытых слоев и их размеры
     output_size = 3  # Количество классов (круг, квадрат, треугольник)
 
     # Создаем нейронную сеть
@@ -125,14 +134,10 @@ if __name__ == "__main__":
     for filename in os.listdir(image_directory):
         if filename.endswith(".jpg"):
             image_path = os.path.join(image_directory, filename)
-            image = Image.open(image_path).convert('L')  # Преобразование в черно-белое изображение
-            image = image.resize((7, 7))
-            image_data = np.array(image)
-            image_data = (image_data < 128).astype(int)
-            X_train.append(image_data.flatten())
-            output_array = image_data.flatten().reshape(7, 7)
+            output_array = load_image(image_path)
+            X_train.append(output_array)
             print(image_path)
-            print(output_array)
+            print(output_array.reshape(7, 7))
 
             # Определение меток по названию файла (предполагается, что файлы названы как C_1.jpg, S_9.jpg и т. д.)
             label = filename.split("_")[0]
@@ -152,19 +157,18 @@ if __name__ == "__main__":
     nn.train(X_train, y_train, learning_rate, epochs)
 
     # Пример использования нейронной сети для классификации
-    test_image = Image.open("test/T_I.jpg").convert('L')
-    test_image = test_image.resize((7, 7))
-    test_input = np.array(test_image)
-    test_input = (test_input < 128).astype(int)  # Преобразование в бинарный массив (черный=1, белый=0)
-    test_input = test_input.flatten()
-
-    output_array = test_input.flatten().reshape(7, 7)
-    print(output_array)
-
-    predicted_output = nn.forward(test_input)
+    image_path = "test/T_I.jpg"
+    output_array = load_image(image_path)
+    print(image_path)
+    print(output_array.reshape(7, 7))
+    predicted_output = nn.forward(output_array)
 
     # Вывод результата
     class_names = ["Круг", "Квадрат", "Треугольник"]
     predicted_class = np.argmax(predicted_output)
     print(f"Предсказанный класс: {class_names[predicted_class]}")
     print(predicted_output)
+
+
+if __name__ == "__main__":
+    main()
